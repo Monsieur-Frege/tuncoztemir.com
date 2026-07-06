@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gating LLM output before it touches a payment network · Tunç Öztemir</title>
-  <meta name="description" content="The architecture I use to let LLMs make compliance decisions on a live payment network without trusting them.">
-  <meta name="theme-color" content="#0F1530">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230F1530'/%3E%3Ctext x='50' y='72' font-size='62' font-family='Helvetica,Arial,sans-serif' font-weight='500' text-anchor='middle' fill='%23F7F7F7'%3ET%3C/text%3E%3Ccircle cx='75' cy='30' r='8' fill='%232563EB'/%3E%3C/svg%3E">
+  <title>On trusting machine judgment · Tunç Öztemir</title>
+  <meta name="description" content="How I let models make high-stakes decisions in production without ever trusting a model.">
+  <meta name="theme-color" content="#0B0A0D">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%230B0A0D'/%3E%3Ctext x='50' y='71' font-size='58' font-family='Georgia,serif' text-anchor='middle' fill='%23ECE7DD'%3ET%3C/text%3E%3Ccircle cx='74' cy='32' r='7' fill='%23C9A86A'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,340;1,9..144,400&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -20,35 +20,35 @@
       <span>Note 01</span>
     </div>
 
-    <header class="hero" style="padding-bottom:1.6rem;">
-      <div class="label rise d1">Note <b>/</b> reliability</div>
-      <h1 class="note-title rise d2">Gating LLM output before it touches a payment network.</h1>
-      <p class="tagline rise d3" style="margin-top:1.2rem;">How I let models make compliance decisions for benefit cards without ever trusting a model.</p>
+    <header class="hero" style="padding-bottom:1rem;">
+      <div class="eyebrow rise d1">On trust</div>
+      <h1 class="note-title rise d2">On trusting machine judgment.</h1>
+      <p class="note-lede rise d3">How I let models make high-stakes decisions in production without ever trusting a model.</p>
     </header>
 
     <div class="note-body rise d4">
 
-      <p>My day job is deciding, product by product, what a benefit card is allowed to buy at a grocery register. The decision is enforced by a payment network at the moment of purchase, and the failure modes are asymmetric and human. A false block means a family cannot buy eggs. A false approval means a program pays for something a regulator says it must not. LLMs are extremely useful for this work and completely unqualified to do it unsupervised. The architecture below keeps both of those true at once.</p>
+      <p>My work lives at the point where a machine's decision becomes a real one. Somewhere in a payment network, in real time, a system I built decides what a program will and will not cover, and that decision holds. The economics are unforgiving and the margin for error is zero. Language models are extraordinary instruments for this kind of work and entirely unqualified to do it unsupervised. The architecture below is how both of those remain true at once.</p>
 
       <h2>The shape of the system</h2>
 
-      <p>Classification runs in stages, ordered by cost and trust. A free stage goes first: weighted taxonomy scoring over product reference data, plus hand-coded overrides for the cases the business has already litigated. A classical screener goes second: a CatBoost model chosen from a 17-model bake-off with leave-one-catalog-out validation, because a model that only performs on the catalog it trained near is a liability wearing a lanyard. Only the residual ambiguity, a few percent of items, reaches an LLM at all.</p>
+      <p>Judgment runs in stages, ordered by cost and confidence. The cheapest, most certain logic goes first, and only the genuinely ambiguous cases, a few percent, ever reach a model at all. A classical screener sits between them, chosen from a field of seventeen candidates and validated so it performs on data it has never seen, not just the data it grew up near.</p>
 
-      <p>LLM verdicts are never accepted singly. A jury of three models votes, two of three to pass, splits escalated to a human. In the most recent run that was 10,059 decisions, 10,055 unanimous, 4 for me. The jury exists because model errors correlate within a model family and much less across prompts and providers, and because "the models disagreed" is the most reliable signal we have for "a human should look."</p>
+      <p>No model verdict is ever accepted on its own. A panel of three models judges each hard case, majority to pass, disagreement escalated to a person. Model errors correlate within a single model and far less across different ones, so a split is the most honest signal there is that a human should look. In the last run, more than ten thousand decisions, all but four were unanimous.</p>
 
-      <p>Nothing reaches the network directly. Every proposed change is rendered as a diff against the last released state and passes two gates: an eval gate (a golden regression set that stays green) and a dry-run gate (the exact payload, validated end to end, with a human reading the diff). The push is then paced in batches behind a latency circuit breaker, a protocol I wrote after personally degrading a partner's write path and deciding that would not happen twice.</p>
+      <p>Nothing reaches production directly. Every change is rendered against the last trusted state, cleared through an evaluation suite that must stay green, and dry-run verified end to end before a human releases it, paced behind a safeguard I wrote after learning, once, exactly how a careless push behaves. Once was the tuition.</p>
 
-      <h2>Three lessons that transfer</h2>
+      <h2>Three lessons that travel</h2>
 
-      <p><strong>Audit labels before models.</strong> Our screener plateaued near F1 0.88 across every architecture. The ceiling was not the model. 33% of the LLM-generated training labels were self-contradictory, opposite verdicts on identical items. Cleaning the labels moved F1 to 0.94 with the same model family. The eval is only as good as its labels, so label audits now come first.</p>
+      <p><strong>Audit the ground truth before the model.</strong> Ours plateaued no matter the architecture. The ceiling was not the model; a third of the training labels contradicted themselves. Repairing the data moved the same model from good to excellent. An evaluation is only ever as good as the truth it is measured against.</p>
 
-      <p><strong>Fail closed, always.</strong> Model output that cannot be parsed is not a retry candidate in a compliance path. It is a NO vote. A verifier you cannot read must never approve anything. That single rule has eaten whole classes of silent failure.</p>
+      <p><strong>Fail closed, always.</strong> Output that cannot be read is not a retry in a decision that touches money. It is a no. A verifier you cannot understand must never be allowed to approve anything.</p>
 
-      <p><strong>Suspect the harness before the model.</strong> One batch of runs looked so poor the obvious read was "the model cannot do this." A controlled bake-off on a 1,000-item gold sample showed the model was fine: batching five items per call had collapsed recall to 0.66 with an 11% parse-failure rate. Single-item calls with a cheap-flag-then-confirm cascade fixed it. The measurement harness is part of the system, and it can be the broken part.</p>
+      <p><strong>Suspect the instrument before the intelligence.</strong> One set of results looked so poor the natural conclusion was that the model could not do the work. A controlled comparison proved the model was fine and the harness around it was quietly breaking every measurement. The apparatus is part of the system, and it is often the part that is wrong.</p>
 
-      <div class="pull">An LLM is a brilliant, unreliable colleague. You do not fire the colleague. You build the review process that makes their brilliance safe to use.</div>
+      <div class="pull">A model is a brilliant, unreliable colleague. You do not dismiss the colleague. You build the review that makes their brilliance safe to rely on.</div>
 
-      <p>I rebuilt this discipline in the open, pointed at a different domain, in <a href="https://github.com/Monsieur-Frege">begriff</a>: protocol specs in, SystemVerilog assertions out, with the same golden sets, juries, calibrated judges, and human-approved release gates. Different stakes, same refusal to trust.</p>
+      <p>I rebuilt this discipline in the open, in a different field entirely, as <a href="https://github.com/Monsieur-Frege">begriff</a>: formal specifications in, machine-checkable proofs out, held to the same standard of evidence, juries, and human-held release. Different stakes, the same refusal to trust without proof.</p>
 
     </div>
 
@@ -58,7 +58,7 @@
         <a href="mailto:tuncoztemir@gmail.com">tuncoztemir@gmail.com</a>
         <a href="https://github.com/Monsieur-Frege">github/Monsieur-Frege</a>
       </div>
-      <p class="colophon">Numbers here are the ones I publish; systems described generically on purpose.</p>
+      <p class="colophon">Written to describe the method, not the client. The systems are real; the details are kept general on purpose.</p>
     </footer>
 
   </div>
