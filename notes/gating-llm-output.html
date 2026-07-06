@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gating LLM output before it touches a payment network · Tunç Öztemir</title>
+  <meta name="description" content="The architecture I use to let LLMs make compliance decisions on a live payment network without trusting them.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90' font-family='Georgia'%3E%C2%A7%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Instrument+Serif&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <div class="sheet">
+
+    <header class="doc-head rise">
+      <div class="doc-meta">
+        <span><a href="../index.html" class="back">&larr; tuncoztemir.com</a></span>
+        <span>notes / 01</span>
+      </div>
+      <h1 class="name" style="font-size: clamp(2rem, 6vw, 3.1rem);">Gating LLM output before it touches a payment network</h1>
+      <p class="thesis">How I let models make compliance decisions for benefit cards without ever trusting a model.</p>
+    </header>
+
+    <div class="note-body rise">
+
+      <p>My day job is deciding, product by product, what a benefit card is allowed to buy at a grocery register. The decision is enforced by a payment network at the moment of purchase, and the failure modes are asymmetric and human: a false block means a family cannot buy eggs; a false approval means a program pays for something a regulator says it must not. LLMs are extremely useful for this work and completely unqualified to do it unsupervised. The architecture below is how both of those things stay true at once.</p>
+
+      <h2>The shape of the system</h2>
+
+      <p>Classification runs in stages ordered by cost and trust. A free stage goes first: weighted taxonomy scoring over product reference data plus hand-coded override rules for the cases the business has already litigated. A classical screener goes second: a CatBoost model chosen from a 17-model bake-off with leave-one-catalog-out validation, because a model that only performs on the catalog it was trained near is a liability wearing a lanyard. Only the residual ambiguity, a few percent of items, reaches an LLM at all.</p>
+
+      <p>LLM verdicts are never accepted singly. A jury of three models votes, and the rule is two of three with splits escalated to a human. In the most recent run that meant 10,059 decisions, 10,055 unanimous, 4 for me. The jury exists because model errors are correlated within a model family but much less correlated across prompts and providers, and because "the models disagreed" turns out to be the most reliable signal we have for "a human should look."</p>
+
+      <p>Nothing the pipeline produces goes to the network directly. Every proposed catalog change is rendered as a diff against the last released state and passes two gates: an eval gate (a golden regression set that must stay green) and a dry-run gate (the exact payload, validated end to end, with a human reading the diff summary before the real push). The push itself is paced in batches behind a latency circuit breaker, a protocol I wrote after personally degrading a partner's write path and deciding that would never happen twice.</p>
+
+      <h2>Three lessons that transfer</h2>
+
+      <p><strong>1. Audit labels before models.</strong> Our screener plateaued near F1 0.88 across every architecture we tried. The ceiling was not the model: 33% of the LLM-generated training labels were self-contradictory, opposite verdicts on identical items. Cleaning the labels moved F1 to 0.94 with the same model family. The eval is only as good as its labels, so label audits now come first.</p>
+
+      <p><strong>2. Fail closed, always.</strong> Model output that cannot be parsed is not a retry candidate in a compliance path; it is a NO vote. A verifier you cannot read must never approve anything. This single rule has eaten entire classes of silent failure.</p>
+
+      <p><strong>3. When results are bad, suspect the harness before the model.</strong> One batch of runs looked so poor the obvious conclusion was "the model cannot do this." A controlled bake-off on a 1,000-item gold sample showed the model was fine: batching five items per call had collapsed recall to 0.66 and produced an 11% parse-failure rate. Single-item calls with a cheap-flag-then-confirm cascade fixed everything. The measurement harness is part of the system and it can be the broken part.</p>
+
+      <blockquote>The design stance underneath all of it: an LLM is a brilliant, unreliable colleague. You do not fire the colleague. You build the review process that makes their brilliance safe to use.</blockquote>
+
+      <p>I rebuilt this discipline in the open, pointed at a different domain, in <a href="https://github.com/Monsieur-Frege">begriff</a>: protocol specs in, SystemVerilog assertions out, with the same golden sets, juries, calibrated judges, and human-approved release gates. Different stakes, same refusal to trust.</p>
+
+    </div>
+
+    <footer class="rise">
+      <div class="contact-row">
+        <a href="../index.html">home</a>
+        <a href="mailto:tuncoztemir@gmail.com">tuncoztemir@gmail.com</a>
+        <a href="https://github.com/Monsieur-Frege">github/Monsieur-Frege</a>
+      </div>
+      <p class="colophon">Numbers above are the ones I publish on my resume; systems described generically on purpose.</p>
+    </footer>
+
+  </div>
+</body>
+</html>

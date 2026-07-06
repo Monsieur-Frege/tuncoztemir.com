@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tunç Öztemir</title>
+  <meta name="description" content="I build LLM systems that have to be right. Head of Product & Data at iQpay: pipelines, evals, and gates in front of a live payment network.">
+  <meta property="og:title" content="Tunç Öztemir">
+  <meta property="og:description" content="I build LLM systems that have to be right.">
+  <meta property="og:url" content="https://tuncoztemir.com">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90' font-family='Georgia'%3E%C2%A7%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Instrument+Serif&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sheet">
+
+    <header class="doc-head rise">
+      <div class="doc-meta">
+        <span>tuncoztemir.com</span>
+        <span>new york, ny</span>
+      </div>
+      <h1 class="name">Tunç Öztemir</h1>
+      <p class="thesis">I build LLM systems that have to be <em>right</em>: when my pipelines are wrong, a family gets declined buying groceries.</p>
+      <div class="stamp">checked twice<br>shipped once</div>
+    </header>
+
+    <section class="clause rise">
+      <span class="clause-no">§ 1 &mdash; now</span>
+      <div>
+        <h2>Head of Product &amp; Data, iQpay</h2>
+        <p>iQpay issues item-restricted benefit cards for 300+ health-plan and social-support programs, accepted at 60,000+ retail locations across 31+ states. At the register, a system decides product by product what each card can buy. I run product, engineering, and data for that system, reporting to the CEO, and I build the parts that cannot be allowed to be wrong: the classification pipeline, the eval gates, and the billing engine every program is invoiced on.</p>
+        <p>The pipeline is a CatBoost screener (picked in a 17-model bake-off) that routes uncertain products to a three-model LLM jury, with eval suites and a dry-run diff in front of the live card network. Nothing ships on vibes.</p>
+      </div>
+    </section>
+
+    <section class="clause rise">
+      <span class="clause-no">§ 2 &mdash; evidence</span>
+      <div>
+        <h2>The ledger</h2>
+        <ul class="ledger">
+          <li>
+            <span class="fact"><strong>$9.7M</strong> in benefit purchases processed in H1 2026, exceeding all of 2025 by 35%</span>
+            <span class="check">prod db, 2026-07-06</span>
+          </li>
+          <li>
+            <span class="fact"><strong>1,277,557</strong> products audited per compliance cycle; 62,627 wrongly blocked items freed</span>
+            <span class="check">audit reports</span>
+          </li>
+          <li>
+            <span class="fact"><strong>F1 0.88 &rarr; 0.94</strong> by auditing the training data, not the model: 33% of LLM-generated labels were self-contradictory</span>
+            <span class="check">label audit</span>
+          </li>
+          <li>
+            <span class="fact"><strong>10,059</strong> jury decisions in the latest run; 10,055 unanimous, 4 escalated to a human</span>
+            <span class="check">jury logs</span>
+          </li>
+          <li>
+            <span class="fact"><strong>124,571</strong> items in the Oregon fresh-produce catalog I shipped, built on a ruleset ratified by the Oregon Health Authority</span>
+            <span class="check">98% on gold sample</span>
+          </li>
+          <li>
+            <span class="fact"><strong>28,102</strong> cards swept in a funding-integrity audit; at-risk dollars stopped before they left the platform</span>
+            <span class="check">reconciled 3-way</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="clause rise">
+      <span class="clause-no">§ 3 &mdash; side work</span>
+      <div>
+        <h2>begriff</h2>
+        <p>Frege's Begriffsschrift turned informal language into checkable formalism in 1879. <a href="https://github.com/Monsieur-Frege" class="mono-link">begriff</a> does a toy version of that to protocol specs: normative clauses from the I2C specification in, SystemVerilog assertions out, and nothing trusted on the way: a hand-written golden rulebook with a held-out test split, a TF-IDF baseline the LLM has to beat, a three-model jury, a calibrated judge, a simulation smoke where bad traces must trip the assertions, and a release gate a human has to approve. Public this week.</p>
+        <p class="note-link"><a href="notes/gating-llm-output.html">notes: gating LLM output before it touches a payment network &rarr;</a></p>
+      </div>
+    </section>
+
+    <section class="clause rise">
+      <span class="clause-no">§ 4 &mdash; before</span>
+      <div>
+        <h2>Prior art</h2>
+        <p>Product at Turkcell, Turkey's largest telecom, during a gap year from Harvard. Nine years co-running Arkhé Project, an education NGO I co-founded at 16 that grew to 146 programs and 2,000+ participants, funded in part by a &euro;95,000 European Endowment for Democracy grant. Harvard A.B. in Psychology, secondary in History, Harvard College Scholar. Radio comedy host, fermentation experimenter, urban design reader.</p>
+      </div>
+    </section>
+
+    <footer class="rise">
+      <div class="contact-row">
+        <a href="mailto:tuncoztemir@gmail.com">tuncoztemir@gmail.com</a>
+        <a href="https://github.com/Monsieur-Frege">github/Monsieur-Frege</a>
+        <a href="https://www.linkedin.com/in/tunc-oztemir-10516a1b8">linkedin</a>
+      </div>
+      <p class="colophon">Hand-typeset HTML and CSS, no framework, no tracker. Built with Claude Code as the pair, the same way I work; every line reviewed, every claim above sourced.</p>
+    </footer>
+
+  </div>
+</body>
+</html>

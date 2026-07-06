@@ -1,0 +1,319 @@
+/* tuncoztemir.com: the audited document.
+   Hand-typeset. One file, no framework. */
+
+:root {
+  --paper: #f6f1e7;
+  --paper-deep: #efe8da;
+  --ink: #1c1914;
+  --ink-soft: #4f483c;
+  --ink-faint: #837a69;
+  --stamp: #b3341f;
+  --stamp-soft: rgba(179, 52, 31, 0.14);
+  --rule: rgba(28, 25, 20, 0.22);
+  --rule-strong: rgba(28, 25, 20, 0.55);
+  --ok: #2c6e49;
+  --serif-display: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --serif-body: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #14120e;
+    --paper-deep: #1b1812;
+    --ink: #eae3d3;
+    --ink-soft: #b5ac97;
+    --ink-faint: #7d755f;
+    --stamp: #ff6a4d;
+    --stamp-soft: rgba(255, 106, 77, 0.16);
+    --rule: rgba(234, 227, 211, 0.22);
+    --rule-strong: rgba(234, 227, 211, 0.5);
+    --ok: #7dc9a0;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif-body);
+  font-size: 1.075rem;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  /* faint paper grain */
+  background-image:
+    radial-gradient(rgba(28, 25, 20, 0.035) 1px, transparent 1px),
+    linear-gradient(var(--paper), var(--paper));
+  background-size: 3px 3px, 100% 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-image:
+      radial-gradient(rgba(234, 227, 211, 0.03) 1px, transparent 1px),
+      linear-gradient(var(--paper), var(--paper));
+  }
+}
+
+.sheet {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 4.5rem 1.4rem 5rem;
+}
+
+/* ---------- document header ---------- */
+
+header.doc-head {
+  border-bottom: 2px solid var(--rule-strong);
+  padding-bottom: 1.6rem;
+  margin-bottom: 2.6rem;
+  position: relative;
+}
+
+.doc-meta {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2.2rem;
+}
+
+h1.name {
+  font-family: var(--serif-display);
+  font-weight: 400;
+  font-size: clamp(2.9rem, 9vw, 4.6rem);
+  line-height: 0.98;
+  margin: 0 0 0.9rem;
+  letter-spacing: -0.01em;
+}
+
+.thesis {
+  font-size: clamp(1.15rem, 2.6vw, 1.35rem);
+  font-style: italic;
+  color: var(--ink-soft);
+  max-width: 34rem;
+  margin: 0;
+}
+
+.thesis em { color: var(--stamp); font-style: italic; }
+
+/* the stamp */
+.stamp {
+  position: absolute;
+  top: 2.4rem;
+  right: 0;
+  transform: rotate(3.5deg);
+  border: 2px solid var(--stamp);
+  color: var(--stamp);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.5rem 0.7rem;
+  line-height: 1.5;
+  background: var(--stamp-soft);
+  text-align: center;
+  user-select: none;
+}
+
+@media (max-width: 40rem) {
+  .stamp { position: static; display: inline-block; margin-top: 1.4rem; }
+}
+
+/* ---------- sections as clauses ---------- */
+
+section { margin: 2.8rem 0; }
+
+.clause {
+  display: grid;
+  grid-template-columns: 5.2rem 1fr;
+  gap: 1.1rem;
+  align-items: baseline;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.5rem;
+}
+
+.clause-no {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--stamp);
+  letter-spacing: 0.06em;
+}
+
+.clause h2 {
+  font-family: var(--serif-display);
+  font-weight: 400;
+  font-size: 1.7rem;
+  margin: 0 0 0.7rem;
+  letter-spacing: 0.005em;
+}
+
+.clause p { margin: 0 0 0.9rem; max-width: 36rem; }
+
+.clause p:last-child { margin-bottom: 0; }
+
+@media (max-width: 40rem) {
+  .clause { grid-template-columns: 1fr; gap: 0.3rem; }
+}
+
+/* ---------- the evidence ledger ---------- */
+
+.ledger {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  font-size: 0.98rem;
+}
+
+.ledger li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.62rem 0.4rem;
+  border-bottom: 1px dashed var(--rule);
+  transition: background 120ms ease;
+}
+
+.ledger li:hover { background: var(--paper-deep); }
+
+.ledger .fact { max-width: 30rem; }
+
+.ledger .fact strong {
+  font-family: var(--mono);
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+
+.ledger .check {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--ok);
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+.ledger .check::before { content: "\2713 "; }
+
+/* ---------- links ---------- */
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--stamp);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: text-decoration-thickness 100ms ease, color 120ms ease;
+}
+
+a:hover { text-decoration-thickness: 3px; color: var(--stamp); }
+
+.mono-link, .note-link {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+}
+
+/* ---------- footer ---------- */
+
+footer {
+  margin-top: 3.6rem;
+  border-top: 2px solid var(--rule-strong);
+  padding-top: 1.4rem;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+}
+
+.contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  margin-bottom: 1.1rem;
+}
+
+.colophon {
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+  max-width: 36rem;
+}
+
+/* ---------- notes page ---------- */
+
+.note-body h2 {
+  font-family: var(--serif-display);
+  font-weight: 400;
+  font-size: 1.45rem;
+  margin: 2.2rem 0 0.6rem;
+}
+
+.note-body p, .note-body li { max-width: 38rem; }
+
+.back {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+blockquote {
+  margin: 1.4rem 0;
+  padding: 0.2rem 0 0.2rem 1.1rem;
+  border-left: 3px solid var(--stamp);
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  background: var(--paper-deep);
+  padding: 0.1em 0.35em;
+  border-radius: 2px;
+}
+
+/* ---------- entrance ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: rise 640ms cubic-bezier(0.2, 0.65, 0.25, 1) forwards;
+  }
+  .rise:nth-child(1) { animation-delay: 60ms; }
+  .rise:nth-child(2) { animation-delay: 160ms; }
+  .rise:nth-child(3) { animation-delay: 260ms; }
+  .rise:nth-child(4) { animation-delay: 360ms; }
+  .rise:nth-child(5) { animation-delay: 460ms; }
+  .rise:nth-child(6) { animation-delay: 560ms; }
+  @keyframes rise {
+    to { opacity: 1; transform: none; }
+  }
+  .stamp {
+    opacity: 0;
+    animation: stamp-in 420ms cubic-bezier(0.34, 1.56, 0.64, 1) 700ms forwards;
+  }
+  @keyframes stamp-in {
+    from { opacity: 0; transform: rotate(3.5deg) scale(1.6); }
+    to { opacity: 1; transform: rotate(3.5deg) scale(1); }
+  }
+}
+
+/* ---------- print: it is a document, after all ---------- */
+
+@media print {
+  body { background: white; color: black; font-size: 11pt; }
+  .stamp { border-color: black; color: black; background: none; }
+  a { text-decoration: none; color: black; }
+  .rise { opacity: 1 !important; transform: none !important; }
+}
